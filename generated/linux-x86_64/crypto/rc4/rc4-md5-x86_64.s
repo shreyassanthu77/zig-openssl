@@ -1300,3 +1300,4 @@ rc4_md5_enc:
 3:
 	.p2align 3
 4:
+	.section .note.GNU-stack,"",@progbits

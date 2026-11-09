@@ -702,3 +702,4 @@ ossl_md5_block_asm_data_order:
 3:
 	.p2align 3
 4:
+	.section .note.GNU-stack,"",@progbits

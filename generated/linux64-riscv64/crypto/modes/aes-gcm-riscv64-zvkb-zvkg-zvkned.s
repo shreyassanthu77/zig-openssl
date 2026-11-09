@@ -1538,3 +1538,4 @@ aes_gcm_dec_blocks_256:
     slli a0, a7, 2
     ret
 .size aes_gcm_dec_blocks_256,.-aes_gcm_dec_blocks_256
+	.section .note.GNU-stack,"",@progbits

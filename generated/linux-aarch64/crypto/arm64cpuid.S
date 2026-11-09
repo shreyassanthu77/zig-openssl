@@ -280,3 +280,4 @@ OPENSSL_rndrrs_asm:
 	mov	x0,x2
 	ret
 .size	OPENSSL_rndrrs_asm,.-OPENSSL_rndrrs_asm
+	.section .note.GNU-stack,"",@progbits

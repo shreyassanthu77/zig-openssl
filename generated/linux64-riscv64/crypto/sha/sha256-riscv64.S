@@ -4837,3 +4837,4 @@ K256:
     .word 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208
     .word 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 .size K256,.-K256
+	.section .note.GNU-stack,"",@progbits

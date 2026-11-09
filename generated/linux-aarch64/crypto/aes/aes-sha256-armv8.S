@@ -5482,3 +5482,4 @@ asm_sha256_hmac_aescbc_dec:
 	b	.Ljoin_common
 
 .size	asm_sha256_hmac_aescbc_dec, .-asm_sha256_hmac_aescbc_dec
+	.section .note.GNU-stack,"",@progbits

@@ -1873,3 +1873,4 @@ bn_mul_add_words:
 .long	0
 .size	bn_mul_add_words,.-bn_mul_add_words
 .align	4
+	.section .note.GNU-stack,"",@progbits

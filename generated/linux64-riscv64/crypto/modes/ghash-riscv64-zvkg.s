@@ -79,3 +79,4 @@ Lstep:
     ret
 
 .size gcm_ghash_rv64i_zvkg,.-gcm_ghash_rv64i_zvkg
+	.section .note.GNU-stack,"",@progbits

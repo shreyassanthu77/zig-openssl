@@ -174,3 +174,4 @@ bn_mul_mont:
 	br	%r14
 .size	bn_mul_mont,.-bn_mul_mont
 .string	"Montgomery Multiplication for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

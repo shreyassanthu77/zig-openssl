@@ -3246,3 +3246,4 @@ SM3K:
     .word 0x8A7A879D, 0x14F50F3B, 0x29EA1E76, 0x53D43CEC
     .word 0xA7A879D8, 0x4F50F3B1, 0x9EA1E762, 0x3D43CEC5
 .size SM3K,.-SM3K
+	.section .note.GNU-stack,"",@progbits

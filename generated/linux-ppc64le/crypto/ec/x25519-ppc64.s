@@ -346,3 +346,4 @@ x25519_fe51_mul121666:
 .byte	0,12,4,0,0x80,11,2,0
 .long	0
 .size	x25519_fe51_mul121666,.-x25519_fe51_mul121666
+	.section .note.GNU-stack,"",@progbits

@@ -2073,3 +2073,4 @@ ChaCha20_512_neon:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	ChaCha20_512_neon,.-ChaCha20_512_neon
+	.section .note.GNU-stack,"",@progbits

@@ -1612,3 +1612,4 @@ sha512_block_armv8:
 	ret
 .size	sha512_block_armv8,.-sha512_block_armv8
 #endif
+	.section .note.GNU-stack,"",@progbits

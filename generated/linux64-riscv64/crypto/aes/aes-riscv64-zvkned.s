@@ -1596,3 +1596,4 @@ L_fail_m2:
 L_end:
   ret
 .size L_end,.-L_end
+	.section .note.GNU-stack,"",@progbits

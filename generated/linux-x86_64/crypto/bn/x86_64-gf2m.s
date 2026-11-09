@@ -330,3 +330,4 @@ bn_GF2m_mul_2x2:
 3:
 	.p2align 3
 4:
+	.section .note.GNU-stack,"",@progbits

@@ -952,3 +952,4 @@ ChaCha20_ctr32_vx:
 .long	1797285236,1797285236,1797285236,1797285236
 .asciz	"ChaCha20 for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
 .align	4
+	.section .note.GNU-stack,"",@progbits

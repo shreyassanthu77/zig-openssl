@@ -1205,3 +1205,4 @@ sha1_block_data_order:
 	br	%r14
 .size	sha1_block_data_order,.-sha1_block_data_order
 .string	"SHA1 block transform for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

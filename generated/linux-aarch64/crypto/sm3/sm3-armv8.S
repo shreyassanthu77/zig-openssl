@@ -506,3 +506,4 @@ _sm3_consts:
 .word	0x79cc4519, 0x9d8a7a87
 .size	_sm3_consts,.-_sm3_consts
 .previous
+	.section .note.GNU-stack,"",@progbits

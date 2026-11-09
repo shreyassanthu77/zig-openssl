@@ -3701,3 +3701,4 @@ _aesp8_xts_dec5x:
 	blr	
 .long	0
 .byte	0,12,0x14,0,0,0,0,0
+	.section .note.GNU-stack,"",@progbits

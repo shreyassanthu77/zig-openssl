@@ -3914,3 +3914,4 @@ aes_v8_xts_decrypt:
 	ret
 .size	aes_v8_xts_decrypt,.-aes_v8_xts_decrypt
 #endif
+	.section .note.GNU-stack,"",@progbits

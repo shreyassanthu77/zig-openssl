@@ -941,3 +941,4 @@ aes_xts_dec_256:
 
     ret
 .size aes_xts_dec_256,.-aes_xts_dec_256
+	.section .note.GNU-stack,"",@progbits

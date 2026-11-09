@@ -675,3 +675,4 @@ ossl_md5_blocks_loop:
 	ldp	x19,x20,[sp],#80
 	ret
 
+	.section .note.GNU-stack,"",@progbits

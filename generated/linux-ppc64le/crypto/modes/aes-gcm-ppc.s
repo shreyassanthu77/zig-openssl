@@ -985,3 +985,4 @@ aes_gcm_out:
 # for vector permute and xor
 permx:
 .long 0x4c5d6e7f, 0x08192a3b, 0xc4d5e6f7, 0x8091a2b3
+	.section .note.GNU-stack,"",@progbits

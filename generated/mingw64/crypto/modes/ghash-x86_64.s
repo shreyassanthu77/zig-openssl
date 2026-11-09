@@ -1349,7 +1349,115 @@ gcm_ghash_clmul:
 gcm_init_avx:
 
 .byte	243,15,30,250
-	jmp	.L_init_clmul
+.LSEH_begin_gcm_init_avx:
+
+.byte	0x48,0x83,0xec,0x18
+.byte	0x0f,0x29,0x34,0x24
+	vzeroupper
+
+	vmovdqu	(%rdx),%xmm2
+	vpshufd	$78,%xmm2,%xmm2
+
+
+	vpshufd	$255,%xmm2,%xmm4
+	vpsrlq	$63,%xmm2,%xmm3
+	vpsllq	$1,%xmm2,%xmm2
+	vpxor	%xmm5,%xmm5,%xmm5
+	vpcmpgtd	%xmm4,%xmm5,%xmm5
+	vpslldq	$8,%xmm3,%xmm3
+	vpor	%xmm3,%xmm2,%xmm2
+
+
+	vpand	.L0x1c2_polynomial(%rip),%xmm5,%xmm5
+	vpxor	%xmm5,%xmm2,%xmm2
+
+	vpunpckhqdq	%xmm2,%xmm2,%xmm6
+	vmovdqa	%xmm2,%xmm0
+	vpxor	%xmm2,%xmm6,%xmm6
+	movq	$4,%r10
+	jmp	.Linit_start_avx
+.p2align	5
+.Linit_loop_avx:
+	vpalignr	$8,%xmm3,%xmm4,%xmm5
+	vmovdqu	%xmm5,-16(%rcx)
+	vpunpckhqdq	%xmm0,%xmm0,%xmm3
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x11,%xmm2,%xmm0,%xmm1
+	vpclmulqdq	$0x00,%xmm2,%xmm0,%xmm0
+	vpclmulqdq	$0x00,%xmm6,%xmm3,%xmm3
+	vpxor	%xmm0,%xmm1,%xmm4
+	vpxor	%xmm4,%xmm3,%xmm3
+
+	vpslldq	$8,%xmm3,%xmm4
+	vpsrldq	$8,%xmm3,%xmm3
+	vpxor	%xmm4,%xmm0,%xmm0
+	vpxor	%xmm3,%xmm1,%xmm1
+	vpsllq	$57,%xmm0,%xmm3
+	vpsllq	$62,%xmm0,%xmm4
+	vpxor	%xmm3,%xmm4,%xmm4
+	vpsllq	$63,%xmm0,%xmm3
+	vpxor	%xmm3,%xmm4,%xmm4
+	vpslldq	$8,%xmm4,%xmm3
+	vpsrldq	$8,%xmm4,%xmm4
+	vpxor	%xmm3,%xmm0,%xmm0
+	vpxor	%xmm4,%xmm1,%xmm1
+
+	vpsrlq	$1,%xmm0,%xmm4
+	vpxor	%xmm0,%xmm1,%xmm1
+	vpxor	%xmm4,%xmm0,%xmm0
+	vpsrlq	$5,%xmm4,%xmm4
+	vpxor	%xmm4,%xmm0,%xmm0
+	vpsrlq	$1,%xmm0,%xmm0
+	vpxor	%xmm1,%xmm0,%xmm0
+.Linit_start_avx:
+	vmovdqa	%xmm0,%xmm5
+	vpunpckhqdq	%xmm0,%xmm0,%xmm3
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x11,%xmm2,%xmm0,%xmm1
+	vpclmulqdq	$0x00,%xmm2,%xmm0,%xmm0
+	vpclmulqdq	$0x00,%xmm6,%xmm3,%xmm3
+	vpxor	%xmm0,%xmm1,%xmm4
+	vpxor	%xmm4,%xmm3,%xmm3
+
+	vpslldq	$8,%xmm3,%xmm4
+	vpsrldq	$8,%xmm3,%xmm3
+	vpxor	%xmm4,%xmm0,%xmm0
+	vpxor	%xmm3,%xmm1,%xmm1
+	vpsllq	$57,%xmm0,%xmm3
+	vpsllq	$62,%xmm0,%xmm4
+	vpxor	%xmm3,%xmm4,%xmm4
+	vpsllq	$63,%xmm0,%xmm3
+	vpxor	%xmm3,%xmm4,%xmm4
+	vpslldq	$8,%xmm4,%xmm3
+	vpsrldq	$8,%xmm4,%xmm4
+	vpxor	%xmm3,%xmm0,%xmm0
+	vpxor	%xmm4,%xmm1,%xmm1
+
+	vpsrlq	$1,%xmm0,%xmm4
+	vpxor	%xmm0,%xmm1,%xmm1
+	vpxor	%xmm4,%xmm0,%xmm0
+	vpsrlq	$5,%xmm4,%xmm4
+	vpxor	%xmm4,%xmm0,%xmm0
+	vpsrlq	$1,%xmm0,%xmm0
+	vpxor	%xmm1,%xmm0,%xmm0
+	vpshufd	$78,%xmm5,%xmm3
+	vpshufd	$78,%xmm0,%xmm4
+	vpxor	%xmm5,%xmm3,%xmm3
+	vmovdqu	%xmm5,0(%rcx)
+	vpxor	%xmm0,%xmm4,%xmm4
+	vmovdqu	%xmm0,16(%rcx)
+	leaq	48(%rcx),%rcx
+	subq	$1,%r10
+	jnz	.Linit_loop_avx
+
+	vpalignr	$8,%xmm4,%xmm3,%xmm5
+	vmovdqu	%xmm5,-16(%rcx)
+
+	vzeroupper
+	movaps	(%rsp),%xmm6
+	leaq	24(%rsp),%rsp
+.LSEH_end_gcm_init_avx:
+	.byte	0xf3,0xc3
 
 
 .globl	gcm_gmult_avx
@@ -1367,7 +1475,403 @@ gcm_gmult_avx:
 gcm_ghash_avx:
 
 .byte	243,15,30,250
-	jmp	.L_ghash_clmul
+	leaq	-136(%rsp),%rax
+.LSEH_begin_gcm_ghash_avx:
+
+.byte	0x48,0x8d,0x60,0xe0
+.byte	0x0f,0x29,0x70,0xe0
+.byte	0x0f,0x29,0x78,0xf0
+.byte	0x44,0x0f,0x29,0x00
+.byte	0x44,0x0f,0x29,0x48,0x10
+.byte	0x44,0x0f,0x29,0x50,0x20
+.byte	0x44,0x0f,0x29,0x58,0x30
+.byte	0x44,0x0f,0x29,0x60,0x40
+.byte	0x44,0x0f,0x29,0x68,0x50
+.byte	0x44,0x0f,0x29,0x70,0x60
+.byte	0x44,0x0f,0x29,0x78,0x70
+	vzeroupper
+
+	vmovdqu	(%rcx),%xmm10
+	leaq	.L0x1c2_polynomial(%rip),%r10
+	leaq	64(%rdx),%rdx
+	vmovdqu	.Lbswap_mask(%rip),%xmm13
+	vpshufb	%xmm13,%xmm10,%xmm10
+	cmpq	$0x80,%r9
+	jb	.Lshort_avx
+	subq	$0x80,%r9
+
+	vmovdqu	112(%r8),%xmm14
+	vmovdqu	0-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vmovdqu	32-64(%rdx),%xmm7
+
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vmovdqu	96(%r8),%xmm15
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpxor	%xmm14,%xmm9,%xmm9
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	16-64(%rdx),%xmm6
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vmovdqu	80(%r8),%xmm14
+	vpclmulqdq	$0x00,%xmm7,%xmm9,%xmm2
+	vpxor	%xmm15,%xmm8,%xmm8
+
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm3
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm4
+	vmovdqu	48-64(%rdx),%xmm6
+	vpxor	%xmm14,%xmm9,%xmm9
+	vmovdqu	64(%r8),%xmm15
+	vpclmulqdq	$0x10,%xmm7,%xmm8,%xmm5
+	vmovdqu	80-64(%rdx),%xmm7
+
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	64-64(%rdx),%xmm6
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm9,%xmm2
+	vpxor	%xmm15,%xmm8,%xmm8
+
+	vmovdqu	48(%r8),%xmm14
+	vpxor	%xmm3,%xmm0,%xmm0
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm3
+	vpxor	%xmm4,%xmm1,%xmm1
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm4
+	vmovdqu	96-64(%rdx),%xmm6
+	vpxor	%xmm5,%xmm2,%xmm2
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpclmulqdq	$0x10,%xmm7,%xmm8,%xmm5
+	vmovdqu	128-64(%rdx),%xmm7
+	vpxor	%xmm14,%xmm9,%xmm9
+
+	vmovdqu	32(%r8),%xmm15
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	112-64(%rdx),%xmm6
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpclmulqdq	$0x00,%xmm7,%xmm9,%xmm2
+	vpxor	%xmm15,%xmm8,%xmm8
+
+	vmovdqu	16(%r8),%xmm14
+	vpxor	%xmm3,%xmm0,%xmm0
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm3
+	vpxor	%xmm4,%xmm1,%xmm1
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm4
+	vmovdqu	144-64(%rdx),%xmm6
+	vpxor	%xmm5,%xmm2,%xmm2
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpclmulqdq	$0x10,%xmm7,%xmm8,%xmm5
+	vmovdqu	176-64(%rdx),%xmm7
+	vpxor	%xmm14,%xmm9,%xmm9
+
+	vmovdqu	(%r8),%xmm15
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	160-64(%rdx),%xmm6
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x10,%xmm7,%xmm9,%xmm2
+
+	leaq	128(%r8),%r8
+	cmpq	$0x80,%r9
+	jb	.Ltail_avx
+
+	vpxor	%xmm10,%xmm15,%xmm15
+	subq	$0x80,%r9
+	jmp	.Loop8x_avx
+
+.p2align	5
+.Loop8x_avx:
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vmovdqu	112(%r8),%xmm14
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpxor	%xmm15,%xmm8,%xmm8
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm10
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm11
+	vmovdqu	0-64(%rdx),%xmm6
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm12
+	vmovdqu	32-64(%rdx),%xmm7
+	vpxor	%xmm14,%xmm9,%xmm9
+
+	vmovdqu	96(%r8),%xmm15
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpxor	%xmm3,%xmm10,%xmm10
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vxorps	%xmm4,%xmm11,%xmm11
+	vmovdqu	16-64(%rdx),%xmm6
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpclmulqdq	$0x00,%xmm7,%xmm9,%xmm2
+	vpxor	%xmm5,%xmm12,%xmm12
+	vxorps	%xmm15,%xmm8,%xmm8
+
+	vmovdqu	80(%r8),%xmm14
+	vpxor	%xmm10,%xmm12,%xmm12
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm3
+	vpxor	%xmm11,%xmm12,%xmm12
+	vpslldq	$8,%xmm12,%xmm9
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm4
+	vpsrldq	$8,%xmm12,%xmm12
+	vpxor	%xmm9,%xmm10,%xmm10
+	vmovdqu	48-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vxorps	%xmm12,%xmm11,%xmm11
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpclmulqdq	$0x10,%xmm7,%xmm8,%xmm5
+	vmovdqu	80-64(%rdx),%xmm7
+	vpxor	%xmm14,%xmm9,%xmm9
+	vpxor	%xmm2,%xmm5,%xmm5
+
+	vmovdqu	64(%r8),%xmm15
+	vpalignr	$8,%xmm10,%xmm10,%xmm12
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpxor	%xmm3,%xmm0,%xmm0
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	64-64(%rdx),%xmm6
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm4,%xmm1,%xmm1
+	vpclmulqdq	$0x00,%xmm7,%xmm9,%xmm2
+	vxorps	%xmm15,%xmm8,%xmm8
+	vpxor	%xmm5,%xmm2,%xmm2
+
+	vmovdqu	48(%r8),%xmm14
+	vpclmulqdq	$0x10,(%r10),%xmm10,%xmm10
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm3
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm4
+	vmovdqu	96-64(%rdx),%xmm6
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x10,%xmm7,%xmm8,%xmm5
+	vmovdqu	128-64(%rdx),%xmm7
+	vpxor	%xmm14,%xmm9,%xmm9
+	vpxor	%xmm2,%xmm5,%xmm5
+
+	vmovdqu	32(%r8),%xmm15
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpxor	%xmm3,%xmm0,%xmm0
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	112-64(%rdx),%xmm6
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm4,%xmm1,%xmm1
+	vpclmulqdq	$0x00,%xmm7,%xmm9,%xmm2
+	vpxor	%xmm15,%xmm8,%xmm8
+	vpxor	%xmm5,%xmm2,%xmm2
+	vxorps	%xmm12,%xmm10,%xmm10
+
+	vmovdqu	16(%r8),%xmm14
+	vpalignr	$8,%xmm10,%xmm10,%xmm12
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm3
+	vpshufb	%xmm13,%xmm14,%xmm14
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm4
+	vmovdqu	144-64(%rdx),%xmm6
+	vpclmulqdq	$0x10,(%r10),%xmm10,%xmm10
+	vxorps	%xmm11,%xmm12,%xmm12
+	vpunpckhqdq	%xmm14,%xmm14,%xmm9
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x10,%xmm7,%xmm8,%xmm5
+	vmovdqu	176-64(%rdx),%xmm7
+	vpxor	%xmm14,%xmm9,%xmm9
+	vpxor	%xmm2,%xmm5,%xmm5
+
+	vmovdqu	(%r8),%xmm15
+	vpclmulqdq	$0x00,%xmm6,%xmm14,%xmm0
+	vpshufb	%xmm13,%xmm15,%xmm15
+	vpclmulqdq	$0x11,%xmm6,%xmm14,%xmm1
+	vmovdqu	160-64(%rdx),%xmm6
+	vpxor	%xmm12,%xmm15,%xmm15
+	vpclmulqdq	$0x10,%xmm7,%xmm9,%xmm2
+	vpxor	%xmm10,%xmm15,%xmm15
+
+	leaq	128(%r8),%r8
+	subq	$0x80,%r9
+	jnc	.Loop8x_avx
+
+	addq	$0x80,%r9
+	jmp	.Ltail_no_xor_avx
+
+.p2align	5
+.Lshort_avx:
+	vmovdqu	-16(%r8,%r9,1),%xmm14
+	leaq	(%r8,%r9,1),%r8
+	vmovdqu	0-64(%rdx),%xmm6
+	vmovdqu	32-64(%rdx),%xmm7
+	vpshufb	%xmm13,%xmm14,%xmm15
+
+	vmovdqa	%xmm0,%xmm3
+	vmovdqa	%xmm1,%xmm4
+	vmovdqa	%xmm2,%xmm5
+	subq	$0x10,%r9
+	jz	.Ltail_avx
+
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vmovdqu	-32(%r8),%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vmovdqu	16-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm15
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+	vpsrldq	$8,%xmm7,%xmm7
+	subq	$0x10,%r9
+	jz	.Ltail_avx
+
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vmovdqu	-48(%r8),%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vmovdqu	48-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm15
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+	vmovdqu	80-64(%rdx),%xmm7
+	subq	$0x10,%r9
+	jz	.Ltail_avx
+
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vmovdqu	-64(%r8),%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vmovdqu	64-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm15
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+	vpsrldq	$8,%xmm7,%xmm7
+	subq	$0x10,%r9
+	jz	.Ltail_avx
+
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vmovdqu	-80(%r8),%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vmovdqu	96-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm15
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+	vmovdqu	128-64(%rdx),%xmm7
+	subq	$0x10,%r9
+	jz	.Ltail_avx
+
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vmovdqu	-96(%r8),%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vmovdqu	112-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm15
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+	vpsrldq	$8,%xmm7,%xmm7
+	subq	$0x10,%r9
+	jz	.Ltail_avx
+
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vmovdqu	-112(%r8),%xmm14
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vmovdqu	144-64(%rdx),%xmm6
+	vpshufb	%xmm13,%xmm14,%xmm15
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+	vmovq	184-64(%rdx),%xmm7
+	subq	$0x10,%r9
+	jmp	.Ltail_avx
+
+.p2align	5
+.Ltail_avx:
+	vpxor	%xmm10,%xmm15,%xmm15
+.Ltail_no_xor_avx:
+	vpunpckhqdq	%xmm15,%xmm15,%xmm8
+	vpxor	%xmm0,%xmm3,%xmm3
+	vpclmulqdq	$0x00,%xmm6,%xmm15,%xmm0
+	vpxor	%xmm15,%xmm8,%xmm8
+	vpxor	%xmm1,%xmm4,%xmm4
+	vpclmulqdq	$0x11,%xmm6,%xmm15,%xmm1
+	vpxor	%xmm2,%xmm5,%xmm5
+	vpclmulqdq	$0x00,%xmm7,%xmm8,%xmm2
+
+	vmovdqu	(%r10),%xmm12
+
+	vpxor	%xmm0,%xmm3,%xmm10
+	vpxor	%xmm1,%xmm4,%xmm11
+	vpxor	%xmm2,%xmm5,%xmm5
+
+	vpxor	%xmm10,%xmm5,%xmm5
+	vpxor	%xmm11,%xmm5,%xmm5
+	vpslldq	$8,%xmm5,%xmm9
+	vpsrldq	$8,%xmm5,%xmm5
+	vpxor	%xmm9,%xmm10,%xmm10
+	vpxor	%xmm5,%xmm11,%xmm11
+
+	vpclmulqdq	$0x10,%xmm12,%xmm10,%xmm9
+	vpalignr	$8,%xmm10,%xmm10,%xmm10
+	vpxor	%xmm9,%xmm10,%xmm10
+
+	vpclmulqdq	$0x10,%xmm12,%xmm10,%xmm9
+	vpalignr	$8,%xmm10,%xmm10,%xmm10
+	vpxor	%xmm11,%xmm10,%xmm10
+	vpxor	%xmm9,%xmm10,%xmm10
+
+	cmpq	$0,%r9
+	jne	.Lshort_avx
+
+	vpshufb	%xmm13,%xmm10,%xmm10
+	vmovdqu	%xmm10,(%rcx)
+	vzeroupper
+	movaps	(%rsp),%xmm6
+	movaps	16(%rsp),%xmm7
+	movaps	32(%rsp),%xmm8
+	movaps	48(%rsp),%xmm9
+	movaps	64(%rsp),%xmm10
+	movaps	80(%rsp),%xmm11
+	movaps	96(%rsp),%xmm12
+	movaps	112(%rsp),%xmm13
+	movaps	128(%rsp),%xmm14
+	movaps	144(%rsp),%xmm15
+	leaq	168(%rsp),%rsp
+.LSEH_end_gcm_ghash_avx:
+	.byte	0xf3,0xc3
 
 
 .section	.rodata
@@ -1529,6 +2033,13 @@ se_handler:
 
 .rva	.LSEH_begin_gcm_ghash_clmul
 .rva	.LSEH_end_gcm_ghash_clmul
+.rva	.LSEH_info_gcm_ghash_clmul
+.rva	.LSEH_begin_gcm_init_avx
+.rva	.LSEH_end_gcm_init_avx
+.rva	.LSEH_info_gcm_init_clmul
+
+.rva	.LSEH_begin_gcm_ghash_avx
+.rva	.LSEH_end_gcm_ghash_avx
 .rva	.LSEH_info_gcm_ghash_clmul
 .section	.xdata
 .p2align	3

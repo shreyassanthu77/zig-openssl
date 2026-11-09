@@ -10303,3 +10303,4 @@ asm_sha512_hmac_aescbc_dec:
 	ldp	d8, d9, [sp], #64
 	ret
 .size	asm_sha512_hmac_aescbc_dec, .-asm_sha512_hmac_aescbc_dec
+	.section .note.GNU-stack,"",@progbits

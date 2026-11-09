@@ -238,3 +238,4 @@ RC4_options:
 .Loptions:
 .align	8
 .string	"rc4(8x,char)"
+	.section .note.GNU-stack,"",@progbits

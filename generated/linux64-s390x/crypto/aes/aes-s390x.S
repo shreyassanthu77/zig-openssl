@@ -2366,3 +2366,4 @@ AES_xts_decrypt:
 	br	%r14
 .size	AES_xts_decrypt,.-AES_xts_decrypt
 .string	"AES for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

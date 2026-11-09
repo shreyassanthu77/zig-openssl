@@ -331,3 +331,4 @@ ORDER_BY_ZVL512_DATA:
 ORDER_BY_ZVL512_EXP:
     .word 2, 3, 4, 5, 6, 7, 255, 255, 10, 11, 12, 13, 14, 15, 255, 255, 255, 255, 255, 255, 0, 1, 2, 3, 255, 255, 255, 255, 8, 9, 10, 11
 .size ORDER_BY_ZVL512_EXP, .-ORDER_BY_ZVL512_EXP
+	.section .note.GNU-stack,"",@progbits

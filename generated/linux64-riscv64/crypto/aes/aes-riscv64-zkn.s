@@ -692,3 +692,4 @@ rv64i_zknd_set_decrypt_key:
     ld      x8,0(sp)
     addi    sp,sp,16
     ret
+	.section .note.GNU-stack,"",@progbits

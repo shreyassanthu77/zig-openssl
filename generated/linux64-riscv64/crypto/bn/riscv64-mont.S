@@ -2445,3 +2445,4 @@ bn_sqr8x_mont:
     addi    sp,sp,168
     ret
 .size bn_sqr8x_mont,.-bn_sqr8x_mont
+	.section .note.GNU-stack,"",@progbits

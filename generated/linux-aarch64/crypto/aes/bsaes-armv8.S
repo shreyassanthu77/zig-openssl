@@ -2352,3 +2352,4 @@ ossl_bsaes_xts_decrypt:
 	ldp	x29, x30, [sp], #192
 	ret
 .size	ossl_bsaes_xts_decrypt,.-ossl_bsaes_xts_decrypt
+	.section .note.GNU-stack,"",@progbits

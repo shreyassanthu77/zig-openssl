@@ -821,3 +821,4 @@ rv64i_zvksed_sm4_decrypt:
 FK:
     .word 0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC
 .size FK,.-FK
+	.section .note.GNU-stack,"",@progbits

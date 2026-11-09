@@ -8485,3 +8485,4 @@ unroll8_eor3_aes_gcm_dec_256_kernel:
 .align	2
 .align	2
 #endif
+	.section .note.GNU-stack,"",@progbits

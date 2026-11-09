@@ -611,3 +611,4 @@ Lbrev8_const:
 Lpolymod:
     .byte 0x87
 .size Lpolymod,.-Lpolymod
+	.section .note.GNU-stack,"",@progbits

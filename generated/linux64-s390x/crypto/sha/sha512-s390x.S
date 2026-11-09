@@ -1264,3 +1264,4 @@ sha512_block_data_order:
 	br	%r14
 .size	sha512_block_data_order,.-sha512_block_data_order
 .string	"SHA512 block transform for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

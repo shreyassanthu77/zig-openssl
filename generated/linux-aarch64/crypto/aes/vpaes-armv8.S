@@ -1174,3 +1174,4 @@ vpaes_ecb_encrypt:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	vpaes_ecb_encrypt,.-vpaes_ecb_encrypt
+	.section .note.GNU-stack,"",@progbits

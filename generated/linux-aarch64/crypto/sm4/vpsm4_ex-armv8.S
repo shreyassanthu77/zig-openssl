@@ -4540,3 +4540,4 @@ vpsm4_ex_xts_encrypt:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	vpsm4_ex_xts_encrypt,.-vpsm4_ex_xts_encrypt
+	.section .note.GNU-stack,"",@progbits

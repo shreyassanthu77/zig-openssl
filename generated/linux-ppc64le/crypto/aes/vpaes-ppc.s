@@ -1477,3 +1477,4 @@ vpaes_set_decrypt_key:
 .byte	0,12,0x04,1,0x80,0,3,0
 .long	0
 .size	vpaes_set_decrypt_key,.-vpaes_set_decrypt_key
+	.section .note.GNU-stack,"",@progbits

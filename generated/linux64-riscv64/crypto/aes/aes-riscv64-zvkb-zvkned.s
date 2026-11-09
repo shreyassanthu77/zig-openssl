@@ -324,3 +324,4 @@ ctr32_encrypt_blocks_256:
 
     ret
 .size ctr32_encrypt_blocks_256,.-ctr32_encrypt_blocks_256
+	.section .note.GNU-stack,"",@progbits

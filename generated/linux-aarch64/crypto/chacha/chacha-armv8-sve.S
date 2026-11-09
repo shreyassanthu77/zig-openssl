@@ -3556,3 +3556,4 @@ ChaCha20_ctr32_sve:
 .Lreturn:
 	ret
 .size	ChaCha20_ctr32_sve,.-ChaCha20_ctr32_sve
+	.section .note.GNU-stack,"",@progbits

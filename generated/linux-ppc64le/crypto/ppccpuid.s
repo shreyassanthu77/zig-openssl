@@ -361,3 +361,4 @@ OPENSSL_instrument_bus2_mfspr268:
 .byte	0,12,0x14,0,0,0,3,0
 .long	0
 .size	OPENSSL_instrument_bus2_mfspr268,.-OPENSSL_instrument_bus2_mfspr268
+	.section .note.GNU-stack,"",@progbits

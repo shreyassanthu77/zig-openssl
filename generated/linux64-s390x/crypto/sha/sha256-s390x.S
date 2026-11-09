@@ -1240,3 +1240,4 @@ sha256_block_data_order:
 	br	%r14
 .size	sha256_block_data_order,.-sha256_block_data_order
 .string	"SHA256 block transform for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

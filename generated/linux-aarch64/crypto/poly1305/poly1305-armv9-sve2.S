@@ -1037,3 +1037,4 @@ poly1305_blocks_sve2:
 	b	poly1305_blocks
 
 .size	poly1305_blocks_sve2,.-poly1305_blocks_sve2
+	.section .note.GNU-stack,"",@progbits

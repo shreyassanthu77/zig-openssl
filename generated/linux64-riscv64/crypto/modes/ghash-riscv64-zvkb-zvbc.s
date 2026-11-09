@@ -266,3 +266,4 @@ Lpolymod:
         .dword 0x0000000000000001
         .dword 0xc200000000000000
 .size Lpolymod,.-Lpolymod
+	.section .note.GNU-stack,"",@progbits

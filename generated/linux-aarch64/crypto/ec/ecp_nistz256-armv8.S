@@ -4286,3 +4286,4 @@ ecp_nistz256_gather_w7:
 	ldr	x29,[sp],#16
 	ret
 .size	ecp_nistz256_gather_w7,.-ecp_nistz256_gather_w7
+	.section .note.GNU-stack,"",@progbits

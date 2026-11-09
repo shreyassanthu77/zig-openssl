@@ -4851,3 +4851,4 @@ ecp_nistz256_gather_w7:
 .byte	0,12,0x14,0,0,0,3,0
 .long	0
 .size	ecp_nistz256_gather_w7,.-ecp_nistz256_gather_w7
+	.section .note.GNU-stack,"",@progbits

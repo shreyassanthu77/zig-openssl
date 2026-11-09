@@ -695,3 +695,4 @@ poly1305_emit:
 .long	4294967295,0,4294967295,0
 .long	0,0,4294967295,0
 .string	"Poly1305 for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

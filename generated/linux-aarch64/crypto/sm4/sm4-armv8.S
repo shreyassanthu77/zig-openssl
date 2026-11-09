@@ -1090,3 +1090,4 @@ sm4_v8_ctr32_encrypt_blocks:
 	ldp	d8,d9,[sp],#16
 	ret
 .size	sm4_v8_ctr32_encrypt_blocks,.-sm4_v8_ctr32_encrypt_blocks
+	.section .note.GNU-stack,"",@progbits

@@ -1344,3 +1344,4 @@ ecp_sm2p256_sqr:
     addi    sp,sp,96
 	ret
 .size ecp_sm2p256_sqr,.-ecp_sm2p256_sqr
+	.section .note.GNU-stack,"",@progbits

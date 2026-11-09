@@ -69,3 +69,4 @@ riscv_vlen_asm:
     slli a0, a0, 3
     ret
 .size riscv_vlen_asm,.-riscv_vlen_asm
+	.section .note.GNU-stack,"",@progbits

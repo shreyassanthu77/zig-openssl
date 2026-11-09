@@ -459,3 +459,4 @@ ChaCha20_ctr32_v_zbb_zvkb:
 
     ret
 .size ChaCha20_ctr32_v_zbb_zvkb,.-ChaCha20_ctr32_v_zbb_zvkb
+	.section .note.GNU-stack,"",@progbits

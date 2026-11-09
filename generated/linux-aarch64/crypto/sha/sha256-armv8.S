@@ -2060,3 +2060,4 @@ sha256_block_neon:
 	add	sp,sp,#16*4+16
 	ret
 .size	sha256_block_neon,.-sha256_block_neon
+	.section .note.GNU-stack,"",@progbits

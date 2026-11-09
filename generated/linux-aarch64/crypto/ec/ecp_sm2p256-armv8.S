@@ -834,3 +834,4 @@ ecp_sm2p256_sqr:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	ecp_sm2p256_sqr,.-ecp_sm2p256_sqr
+	.section .note.GNU-stack,"",@progbits

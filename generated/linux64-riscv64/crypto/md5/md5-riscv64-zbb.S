@@ -710,3 +710,4 @@ L_round_loop:
 
     ret
 .size ossl_md5_block_asm_data_order_zbb,.-ossl_md5_block_asm_data_order_zbb
+	.section .note.GNU-stack,"",@progbits

@@ -642,3 +642,4 @@ gcm_ghash_v8_4x:
 .align	2
 .align	2
 #endif
+	.section .note.GNU-stack,"",@progbits

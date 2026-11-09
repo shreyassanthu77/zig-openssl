@@ -156,3 +156,4 @@ rem_4bit:
 .type	rem_4bit,@object
 .size	rem_4bit,(.-rem_4bit)
 .string	"GHASH for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits

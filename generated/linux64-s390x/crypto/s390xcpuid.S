@@ -402,3 +402,4 @@ s390x_flip_endian64:
 .size	s390x_flip_endian64,.-s390x_flip_endian64
 .section	.init
 	brasl	%r14,OPENSSL_cpuid_setup
+	.section .note.GNU-stack,"",@progbits

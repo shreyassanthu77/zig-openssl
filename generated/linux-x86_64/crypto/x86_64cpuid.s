@@ -502,3 +502,4 @@ OPENSSL_ia32_rdseed_bytes:
 3:
 	.p2align 3
 4:
+	.section .note.GNU-stack,"",@progbits

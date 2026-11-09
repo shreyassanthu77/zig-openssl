@@ -215,3 +215,4 @@ bn_GF2m_mul_2x2:
 	br	%r14
 .size	bn_GF2m_mul_2x2,.-bn_GF2m_mul_2x2
 .string	"GF(2^m) Multiplication for s390x, CRYPTOGAMS by <https://github.com/dot-asm>"
+	.section .note.GNU-stack,"",@progbits
