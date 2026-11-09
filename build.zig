@@ -72,12 +72,17 @@ fn buildLibraries(
         .optimize = optimize,
         .link_libc = true,
         .pic = pic,
+        // Zig enables UndefinedBehaviorSanitizer for C code in Debug builds.
+        // OpenSSL is not written for it, and a checked-in static library must
+        // not require the UBSan runtime at the consumer's link step.
+        .sanitize_c = .off,
     });
     const libssl_mod = b.createModule(.{
         .target = target,
         .optimize = optimize,
         .link_libc = true,
         .pic = pic,
+        .sanitize_c = .off,
     });
 
     addIncludeDirs(b, libcrypto_mod, upstream, gen_dir, data.include_dirs);

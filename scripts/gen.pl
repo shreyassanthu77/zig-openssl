@@ -105,7 +105,7 @@ for my $key (sort keys %generators) {
     my $dest = File::Spec->catdir($outdir, $key);
     remove_tree($dest);
     make_path($dest);
-    my $copied = copy_generated($work, $dest);
+    my $copied = copy_generated($work, $dest, $gen->{os} eq 'linux');
     print "    generated $copied files\n";
 
     $generated_by_key{$key} = {
@@ -190,26 +190,25 @@ sub write_shim {
     open(my $fh, '>', $path) or die "gen: cannot write $path: $!\n";
     print $fh <<"SHIM";
 #!/bin/sh
-# Used only by scripts/gen.pl. Compilations are faked (we only need the
-# generated assembly/headers), but `zig cc --version` must be real so that
-# OpenSSL's perlasm selects the LLVM-compatible output flavour.
+# Used only by scripts/gen.pl. Object compilation is faked (we only need the
+# generated assembly/headers, not the .o files). Everything else must run
+# against the real compiler: OpenSSL's perlasm scripts probe it with commands
+# such as `\$CC -v`, `\$CC -dM -E` and `\$CC -Wa,-v -c -o /dev/null`, and
+# faking those makes them fall back to reduced or stub implementations.
 if [ "\$1" = "cc" ]; then
-    for a in "\$@"; do
-        if [ "\$a" = "--version" ]; then
-            exec '$quoted' "\$@"
-        fi
-    done
+    compile=
     out=
     prev=
     for a in "\$@"; do
+        if [ "\$a" = "-c" ]; then compile=1; fi
         if [ "\$prev" = "-o" ]; then out="\$a"; fi
         prev="\$a"
     done
-    if [ -n "\$out" ]; then
+    if [ -n "\$compile" ] && [ -n "\$out" ] && [ "\$out" != "/dev/null" ]; then
         mkdir -p "\$(dirname "\$out")"
         : > "\$out"
+        exit 0
     fi
-    exit 0
 fi
 exec '$quoted' "\$@"
 SHIM
@@ -347,7 +346,7 @@ sub canon_abs {
 }
 
 sub copy_generated {
-    my ($work, $dest) = @_;
+    my ($work, $dest, $elf) = @_;
     my $count = 0;
     my @files;
     File::Find::find({
@@ -367,9 +366,29 @@ sub copy_generated {
         copy(File::Spec->catfile($work, $rel), $target)
             or die "gen: cannot copy $rel: $!\n";
         scrub_paths($target, $work);
+        # OpenSSL's build passes -Wa,--noexecstack to the assembler. Zig's
+        # build does not, and its assembler leaves the .note.GNU-stack section
+        # out of assembly objects. Embed the directive in the generated ELF
+        # assembly so the archives cannot force an executable stack on
+        # consumers using any toolchain.
+        add_gnu_stack_note($target) if $elf && $rel =~ /\.(?:s|S)$/;
         $count++;
     }
     return $count;
+}
+
+sub add_gnu_stack_note {
+    my ($path) = @_;
+    open(my $in, '<', $path) or die "gen: cannot read $path: $!\n";
+    local $/;
+    my $data = <$in>;
+    close($in);
+    return if $data =~ /\.note\.GNU-stack/;
+    $data .= "\n" unless $data =~ /\n\z/;
+    $data .= "\t.section .note.GNU-stack,\"\",\@progbits\n";
+    open(my $out, '>', $path) or die "gen: cannot write $path: $!\n";
+    print $out $data;
+    close($out);
 }
 
 # The generated headers contain comments with the Configure-relative source
