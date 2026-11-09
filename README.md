@@ -69,6 +69,8 @@ perlasm scripts, and updates:
 - [`generated/`](generated): generated headers, C sources and assembly.
 - [`generated/manifest.zon`](generated/manifest.zon): the source lists and
   compiler defines for each supported platform.
+- [`generated/manifest.txt`](generated/manifest.txt): the same data in a
+  line-oriented format for build systems that do not read Zig files.
 
 ```sh
 zig build gen
@@ -81,3 +83,26 @@ dependency cycle.
 
 OpenSSL itself is a Zig package dependency (see `build.zig.zon`), so the
 generator gets the exact pinned upstream sources.
+
+## Using the generated files without Zig
+
+[`generated/manifest.txt`](generated/manifest.txt) describes the same build in
+a simple text format. Each line is one record, fields are separated by spaces,
+and the file header documents every record. For example:
+
+```text
+version 1
+include .
+include include
+platform x86_64 linux gnu,musl generated/linux-x86_64
+triple x86_64-linux-gnu
+triple x86_64-linux-musl
+group 0 crypto c -DAES_ASM -DSHA1_ASM
+source 0 crypto/aes/aes_cbc.c
+generated 0 crypto/aes/aesni-x86_64.s
+```
+
+Compile each `source` file relative to the OpenSSL source tree and each
+`generated` file relative to the platform's `generated_dir`, using the
+definitions from its group. Add every `include` directory from both roots, with
+the generated copy first so it shadows the upstream headers.
